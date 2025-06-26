@@ -22,7 +22,7 @@ ChromaCode™ is a revolutionary visual-first programming language that transfor
 
 ### The Image Preservation Principle™
 
-*"The image is just that - the image"* - Edna Nyangau
+*"The image is just that"* - Edna Nyangau
 
 Your original image remains completely sacred (untouchable and pixel-perfect) while mathematical extraction creates an interactive layer on top. No AI hallucination, no visual degradation, no interpretation errors.
 
