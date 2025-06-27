@@ -15,7 +15,7 @@ For commercial licensing: license@chromacode.dev
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChromaMOTHERFUCKINGENGLINGCode™ - Visual-First Layout Language</title>
+    <title>ChromaCode™ - Visual-First Layout Language</title>
     <style>
         * {
             margin: 0;
@@ -265,7 +265,7 @@ For commercial licensing: license@chromacode.dev
             background: white;
             border-radius: 8px;
             overflow: hidden;
-            aspect-ratio: 4/3;
+            aspect-ratio: 9/16;
         }
 
         .canvas {
@@ -273,7 +273,7 @@ For commercial licensing: license@chromacode.dev
             inset: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
         }
 
         .overlay {
@@ -425,7 +425,7 @@ For commercial licensing: license@chromacode.dev
     <div class="header">
         <div class="header-content">
             <div>
-                <h1 class="title">ChromaMOTHERFUCKINGENGLISHCode™</h1>
+                <h1 class="title">ChromaCode™</h1>
                 <p class="subtitle">Visual-first color-intelligent language from image to code</p>
             </div>
             <div class="header-buttons">
@@ -558,52 +558,34 @@ For commercial licensing: license@chromacode.dev
         let showOverlay = true;
         let gridMode = 'interactive'; // Start with interactive mode
 
-        // Demo image - same as React version
+        // Demo image - iPhone mockup
         const demoImageSVG = `
-            <svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <radialGradient id="sky" cx="50%" cy="30%">
-                        <stop offset="0%" style="stop-color:#87CEEB"/>
-                        <stop offset="100%" style="stop-color:#4682B4"/>
-                    </radialGradient>
-                    <linearGradient id="mountain" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style="stop-color:#8B7D6B"/>
-                        <stop offset="100%" style="stop-color:#5D4E37"/>
-                    </linearGradient>
-                    <linearGradient id="grass" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" style="stop-color:#90EE90"/>
-                        <stop offset="100%" style="stop-color:#228B22"/>
-                    </linearGradient>
-                </defs>
+            <svg width="375" height="812" xmlns="http://www.w3.org/2000/svg">
+                <!-- iPhone frame -->
+                <rect width="375" height="812" fill="#1f1f1f" rx="40"/>
+                <rect x="20" y="60" width="335" height="692" fill="#000" rx="20"/>
                 
-                <!-- Sky -->
-                <rect width="800" height="400" fill="url(#sky)"/>
+                <!-- Status bar -->
+                <rect x="30" y="80" width="315" height="30" fill="#000"/>
+                <text x="40" y="98" fill="white" font-size="12" font-family="Arial">9:41</text>
+                <circle cx="320" cy="90" r="3" fill="white"/>
                 
-                <!-- Mountains -->
-                <polygon points="0,300 200,150 400,200 600,100 800,180 800,400 0,400" fill="url(#mountain)"/>
+                <!-- App interface -->
+                <rect x="30" y="120" width="315" height="50" fill="#007AFF" rx="10"/>
+                <text x="180" y="150" fill="white" font-size="16" font-family="Arial" text-anchor="middle">Messages</text>
                 
-                <!-- Foreground hills -->
-                <ellipse cx="150" cy="380" rx="120" ry="80" fill="#6B8E23"/>
-                <ellipse cx="650" cy="390" rx="150" ry="70" fill="#556B2F"/>
+                <!-- Messages -->
+                <rect x="40" y="190" width="200" height="40" fill="#e5e5ea" rx="20"/>
+                <text x="50" y="215" fill="black" font-size="14" font-family="Arial">Hey, how are you?</text>
                 
-                <!-- Grass -->
-                <rect y="450" width="800" height="150" fill="url(#grass)"/>
+                <rect x="135" y="250" width="200" height="40" fill="#007AFF" rx="20"/>
+                <text x="145" y="275" fill="white" font-size="14" font-family="Arial">Good! Just working on a project</text>
                 
-                <!-- Trees -->
-                <circle cx="100" cy="420" r="30" fill="#228B22"/>
-                <rect x="95" y="420" width="10" height="40" fill="#8B4513"/>
+                <rect x="40" y="310" width="150" height="40" fill="#e5e5ea" rx="20"/>
+                <text x="50" y="335" fill="black" font-size="14" font-family="Arial">Cool! What's it about?</text>
                 
-                <circle cx="300" cy="400" r="25" fill="#32CD32"/>
-                <rect x="295" y="400" width="10" height="35" fill="#8B4513"/>
-                
-                <circle cx="500" cy="430" r="20" fill="#228B22"/>
-                <rect x="495" y="430" width="10" height="30" fill="#8B4513"/>
-                
-                <!-- Clouds -->
-                <ellipse cx="200" cy="100" rx="40" ry="20" fill="white" opacity="0.8"/>
-                <ellipse cx="220" cy="95" rx="35" ry="18" fill="white" opacity="0.8"/>
-                <ellipse cx="600" cy="120" rx="50" ry="25" fill="white" opacity="0.7"/>
-                <ellipse cx="625" cy="115" rx="40" ry="20" fill="white" opacity="0.7"/>
+                <!-- Home indicator -->
+                <rect x="150" y="780" width="75" height="4" fill="#666" rx="2"/>
             </svg>
         `;
 
@@ -678,14 +660,14 @@ For commercial licensing: license@chromacode.dev
             const canvas = document.getElementById('canvas');
             const ctx = canvas.getContext('2d');
             
-            canvas.width = 800;
-            canvas.height = 600;
+            canvas.width = 375;
+            canvas.height = 812;
             
-            ctx.drawImage(img, 0, 0, 800, 600);
-            const imageData = ctx.getImageData(0, 0, 800, 600);
+            ctx.drawImage(img, 0, 0, 375, 812);
+            const imageData = ctx.getImageData(0, 0, 375, 812);
             
-            const cellWidth = 800 / gridSize;
-            const cellHeight = 600 / gridSize;
+            const cellWidth = 375 / gridSize;
+            const cellHeight = 812 / gridSize;
             const newGridData = [];
             
             for (let row = 0; row < gridSize; row++) {
@@ -730,8 +712,8 @@ For commercial licensing: license@chromacode.dev
                 creator: "ChromaCode™ by Edna N.",
                 timestamp: new Date().toISOString(),
                 image: {
-                    width: 800,
-                    height: 600,
+                    width: 375,
+                    height: 812,
                     originalSrc: img.src.substring(0, 100) + "..."
                 },
                 grid: {
@@ -792,10 +774,10 @@ For commercial licensing: license@chromacode.dev
             gridData.forEach(cell => {
                 const cellDiv = document.createElement('div');
                 cellDiv.className = `grid-cell ${gridMode}`;
-                cellDiv.style.left = `${(cell.bounds.x / 800) * 100}%`;
-                cellDiv.style.top = `${(cell.bounds.y / 600) * 100}%`;
-                cellDiv.style.width = `${(cell.bounds.width / 800) * 100}%`;
-                cellDiv.style.height = `${(cell.bounds.height / 600) * 100}%`;
+                cellDiv.style.left = `${(cell.bounds.x / 375) * 100}%`;
+                cellDiv.style.top = `${(cell.bounds.y / 812) * 100}%`;
+                cellDiv.style.width = `${(cell.bounds.width / 375) * 100}%`;
+                cellDiv.style.height = `${(cell.bounds.height / 812) * 100}%`;
                 
                 if (gridMode === 'interactive') {
                     cellDiv.innerHTML = `
