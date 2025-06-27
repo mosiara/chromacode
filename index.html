@@ -773,13 +773,37 @@ For commercial licensing: license@chromacode.dev
             
             if (!showOverlay) return;
             
+            // Get the actual displayed canvas size for proper overlay positioning
+            const canvas = document.getElementById('canvas');
+            const canvasContainer = document.getElementById('canvasContainer');
+            const containerRect = canvasContainer.getBoundingClientRect();
+            const canvasRect = canvas.getBoundingClientRect();
+            
+            // Calculate the scale and offset of the displayed image
+            const scaleX = canvasRect.width / canvas.width;
+            const scaleY = canvasRect.height / canvas.height;
+            const scale = Math.min(scaleX, scaleY); // object-fit: contain uses the smaller scale
+            
+            const displayWidth = canvas.width * scale;
+            const displayHeight = canvas.height * scale;
+            const offsetX = (canvasRect.width - displayWidth) / 2;
+            const offsetY = (canvasRect.height - displayHeight) / 2;
+            
             gridData.forEach(cell => {
                 const cellDiv = document.createElement('div');
                 cellDiv.className = `grid-cell ${gridMode}`;
-                cellDiv.style.left = `${(cell.bounds.x / currentImage.width) * 100}%`;
-                cellDiv.style.top = `${(cell.bounds.y / currentImage.height) * 100}%`;
-                cellDiv.style.width = `${(cell.bounds.width / currentImage.width) * 100}%`;
-                cellDiv.style.height = `${(cell.bounds.height / currentImage.height) * 100}%`;
+                
+                // Position overlay cells to match the actual displayed image
+                const left = offsetX + (cell.bounds.x * scale);
+                const top = offsetY + (cell.bounds.y * scale);
+                const width = cell.bounds.width * scale;
+                const height = cell.bounds.height * scale;
+                
+                cellDiv.style.left = `${left}px`;
+                cellDiv.style.top = `${top}px`;
+                cellDiv.style.width = `${width}px`;
+                cellDiv.style.height = `${height}px`;
+                cellDiv.style.position = 'absolute';
                 
                 if (gridMode === 'interactive') {
                     cellDiv.innerHTML = `
@@ -858,6 +882,13 @@ For commercial licensing: license@chromacode.dev
             showOverlay = document.getElementById('showOverlay').checked;
             renderOverlay();
         }
+
+        // Re-render overlay when window resizes to maintain alignment
+        window.addEventListener('resize', () => {
+            if (showOverlay && gridData.length > 0) {
+                setTimeout(renderOverlay, 100); // Small delay to ensure layout is complete
+            }
+        });
 
         function generateBackgroundCode() {
             if (!currentImage || !gridData.length) return null;
