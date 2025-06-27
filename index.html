@@ -154,7 +154,7 @@ For commercial licensing: license@chromacode.dev
         }
 
         .range-input::-webkit-slider-thumb {
-            -webkit-appearance: none;
+            -webkit-appearance-webkit-appearance: none;
             appearance: none;
             width: 20px;
             height: 20px;
@@ -878,10 +878,10 @@ For commercial licensing: license@chromacode.dev
         function generateBackgroundCode() {
             if (!currentImage || !gridData.length) return null;
 
-            const css = `/* ChromaCode Background Grid */
+            const css = `/* ChromaCode Static Background Grid */
 .chromacode-background {
     position: relative;
-    background-image: url('${currentImage.src}');
+    background-image: url('your-image.jpg'); /* Replace with your image */
     background-size: cover;
     background-position: center;
     width: 100%;
@@ -904,13 +904,16 @@ For commercial licensing: license@chromacode.dev
 .chromacode-cell {
     border: 1px solid rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(1px);
+    transition: all 0.3s ease;
 }
 
-/* Optional: Add hover effects */
-.chromacode-grid.interactive .chromacode-cell {
+/* Optional: Make grid interactive */
+.chromacode-grid.interactive {
     pointer-events: all;
+}
+
+.chromacode-grid.interactive .chromacode-cell {
     cursor: pointer;
-    transition: all 0.3s ease;
 }
 
 .chromacode-grid.interactive .chromacode-cell:hover {
@@ -918,7 +921,7 @@ For commercial licensing: license@chromacode.dev
     border-color: rgba(255, 255, 255, 0.5);
 }`;
 
-            const html = `<!-- ChromaCode Background Grid -->
+            const html = `<!-- ChromaCode Static Background Grid -->
 <div class="chromacode-background">
     <div class="chromacode-grid">
         ${Array(gridSize * gridSize).fill(0).map((_, i) => 
@@ -927,62 +930,41 @@ For commercial licensing: license@chromacode.dev
     </div>
 </div>`;
 
-            const javascript = `// ChromaCode JavaScript Interactions
-const chromaCodeGrid = {
-    gridSize: ${gridSize},
-    cells: ${JSON.stringify(gridData, null, 4)},
-    
-    init() {
-        const cells = document.querySelectorAll('.chromacode-cell');
-        cells.forEach((cell, index) => {
-            const row = Math.floor(index / this.gridSize);
-            const col = index % this.gridSize;
-            const cellData = this.cells.find(c => c.position.row === row && c.position.col === col);
-            
-            if (cellData) {
-                cell.addEventListener('click', () => this.onCellClick(cellData));
-                cell.addEventListener('mouseenter', () => this.onCellHover(cellData));
-                cell.style.setProperty('--cell-color', cellData.primaryColor.hex);
-            }
-        });
-    },
-    
-    onCellClick(cellData) {
-        console.log('Cell clicked:', cellData);
-        // Add your click handling logic here
-        alert(\`Clicked cell at row \${cellData.position.row}, col \${cellData.position.col}\\nColor: \${cellData.primaryColor.hex}\`);
-    },
-    
-    onCellHover(cellData) {
-        console.log('Cell hovered:', cellData);
-        // Add your hover handling logic here
-    }
-};
-
-// Initialize when DOM is loaded
+            const javascript = `// ChromaCode - Minimal JavaScript for interactions (optional)
 document.addEventListener('DOMContentLoaded', () => {
-    chromaCodeGrid.init();
+    const grid = document.querySelector('.chromacode-grid');
+    const cells = document.querySelectorAll('.chromacode-cell');
+    
+    // Make grid interactive (optional)
+    grid.classList.add('interactive');
+    
+    cells.forEach((cell, index) => {
+        const row = Math.floor(index / ${gridSize});
+        const col = index % ${gridSize};
+        
+        cell.addEventListener('click', () => {
+            console.log(\`Clicked cell: row \${row}, col \${col}\`);
+            // Add your custom logic here
+        });
+    });
 });`;
 
-            const react = `// ChromaCode React Component
-import React, { useState } from 'react';
+            const react = `// ChromaCode React Component - Clean & Lightweight
+import React from 'react';
 
 const ChromaCodeBackground = ({ 
-    imageUrl = '${currentImage.src}', 
-    gridSize = ${gridSize}, 
+    imageUrl = 'your-image.jpg',
+    gridSize = ${gridSize},
     interactive = false,
-    gridData = ${JSON.stringify(gridData, null, 4)}
+    onCellClick = null
 }) => {
-    const [selectedCell, setSelectedCell] = useState(null);
-    
-    const handleCellClick = (cellData) => {
-        setSelectedCell(cellData);
-        console.log('Cell clicked:', cellData);
+    const handleCellClick = (row, col) => {
+        console.log(\`Clicked cell: row \${row}, col \${col}\`);
+        if (onCellClick) onCellClick(row, col);
     };
     
     return (
         <div 
-            className="chromacode-background"
             style={{
                 position: 'relative',
                 backgroundImage: \`url(\${imageUrl})\`,
@@ -993,7 +975,6 @@ const ChromaCodeBackground = ({
             }}
         >
             <div 
-                className={\`chromacode-grid \${interactive ? 'interactive' : ''}\`}
                 style={{
                     position: 'absolute',
                     top: 0,
@@ -1007,40 +988,23 @@ const ChromaCodeBackground = ({
                     pointerEvents: interactive ? 'all' : 'none'
                 }}
             >
-                {gridData.map((cellData, index) => (
-                    <div
-                        key={cellData.id}
-                        className="chromacode-cell"
-                        data-cell={\`\${cellData.position.row}-\${cellData.position.col}\`}
-                        style={{
-                            border: '1px solid rgba(255, 255, 255, 0.2)',
-                            backdropFilter: 'blur(1px)',
-                            cursor: interactive ? 'pointer' : 'default',
-                            transition: 'all 0.3s ease',
-                            backgroundColor: selectedCell?.id === cellData.id ? 'rgba(255, 255, 255, 0.3)' : 'transparent'
-                        }}
-                        onClick={() => interactive && handleCellClick(cellData)}
-                        title={\`Cell: \${cellData.position.row},\${cellData.position.col} | Color: \${cellData.primaryColor.hex}\`}
-                    />
-                ))}
+                {Array(gridSize * gridSize).fill(0).map((_, index) => {
+                    const row = Math.floor(index / gridSize);
+                    const col = index % gridSize;
+                    return (
+                        <div
+                            key={index}
+                            style={{
+                                border: '1px solid rgba(255, 255, 255, 0.2)',
+                                backdropFilter: 'blur(1px)',
+                                cursor: interactive ? 'pointer' : 'default',
+                                transition: 'all 0.3s ease'
+                            }}
+                            onClick={() => interactive && handleCellClick(row, col)}
+                        />
+                    );
+                })}
             </div>
-            
-            {selectedCell && (
-                <div style={{
-                    position: 'absolute',
-                    top: '10px',
-                    right: '10px',
-                    background: 'rgba(0, 0, 0, 0.8)',
-                    color: 'white',
-                    padding: '10px',
-                    borderRadius: '8px',
-                    fontSize: '12px'
-                }}>
-                    <div>Row: {selectedCell.position.row}, Col: {selectedCell.position.col}</div>
-                    <div>Color: {selectedCell.primaryColor.hex}</div>
-                    <div>Brightness: {(selectedCell.metadata.brightness * 100).toFixed(1)}%</div>
-                </div>
-            )}
         </div>
     );
 };
@@ -1053,32 +1017,37 @@ export default ChromaCodeBackground;`;
                 javascript,
                 react,
                 usage: `
-# ChromaCode Background Usage
+# ChromaCode Static Background - Lightweight Export
 
-## Basic Usage
-1. Copy the CSS to your stylesheet
-2. Copy the HTML where you want the background
-3. Copy the JavaScript for interactive functionality
-4. Adjust the height in .chromacode-background as needed
+## File Size: ~2KB (instead of 8MB!)
 
-## Interactive Features
-- Click handling with cell data access
-- Hover effects and animations
-- Color information for each cell
-- Customizable interactions
+## Quick Setup
+1. Replace 'your-image.jpg' in CSS with your actual image path
+2. Copy CSS to your stylesheet
+3. Copy HTML where you want the grid
+4. Optional: Add JavaScript for basic interactions
+
+## What's Included
+- Clean CSS grid overlay
+- Minimal HTML structure  
+- Optional lightweight JavaScript
+- Production-ready React component
+- No embedded image data or heavy metadata
 
 ## Customization
-- Change grid size by updating grid-template-columns/rows
-- Modify opacity/color of grid lines in .chromacode-cell
-- Add .interactive class to chromacode-grid for hover effects
-- Customize JavaScript event handlers
+- Grid size: ${gridSize}x${gridSize} (change in CSS grid-template)
+- Border style: Modify .chromacode-cell border
+- Hover effects: Add .interactive class to grid
+- Interactions: Use the optional JavaScript
 
-## Frameworks
-- React: Use the provided React component
-- Vue/Angular: Adapt the HTML structure and JavaScript
-- Vanilla JS: Use the provided JavaScript class
+## Perfect For
+- Landing page backgrounds
+- Section dividers
+- Image overlays
+- Layout structure
+- Design systems
 
-Generated by ChromaCode™
+Generated by ChromaCode™ - Static Background Mode
 `
             };
         }
